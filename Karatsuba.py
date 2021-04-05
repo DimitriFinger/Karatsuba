@@ -58,8 +58,8 @@ def Subtraction(number_1,number_2):
     x = number_1
     y = number_2
     result = ''
-    aux2 = 0
     changed = False
+    carry = 0
 
     if y > x :
         x,y = y,x
@@ -67,21 +67,27 @@ def Subtraction(number_1,number_2):
 
     while len(x) != 0:
         if y[-1:] > x[-1:]:
-            aux = int(x[-1:]) + 10
+            aux = (int(x[-1:]) + 10) - carry
             aux = aux - int(y[-1:])
-            aux2 = 1
+            carry = 1
+            result = str(aux) + result
+
+        elif y[-1:] == '0' and x[-1:] == '0' and carry > 0:
+            aux = (int(x[-1:]) + 10) - carry            
             result = str(aux) + result
         else:
             #ajustar erro quando rouba de 0
-            aux = int(x[-1:]) - aux2 - int(y[-1:])
-            aux2 = 0
+            aux = int(x[-1:]) - int(y[-1:]) - carry
+            carry = 0
             result = str(aux) + result
     
         x = x[:-1]
         y = y[:-1]
     
-    #if changed == False:
-    print(result)
+    if changed == False:
+        print(result)
+    else:
+        print('-' + result)
     
 
 
