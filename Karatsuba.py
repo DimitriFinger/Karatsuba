@@ -5,15 +5,11 @@
 
 import sys
 
-def Karatsuba(number_A, number_B):
-    
-    
+def Karatsuba(number_A, number_B):      
 
-    # define shift size
-    shift = int(len(number_A)/2) * '0'
-
-    if len(number_A) == 1:
-        return str(int(number_A) * int(number_B))
+    if len(number_A) == 1 and len(number_B) == 1:
+       #print(str(int(number_A) * int(number_B)))
+       return str(int(number_A) * int(number_B))
 
     if len(number_A) > len(number_B):
         while len(number_A) != len(number_B):
@@ -25,17 +21,29 @@ def Karatsuba(number_A, number_B):
 
     if len(number_A)%2 != 0 and len(number_A) > 1:
         number_A = '0' + number_A
-        number_B = '0' + number_B  
+        number_B = '0' + number_B 
 
-    #Sum(number_A,number_B)
-    Subtraction(number_A, number_B)
+    # define shift size
+    shift = int(len(number_A)/2) * '0' 
     
     number_A_1 = number_A[:int(len(number_A)/2)]
     number_A_2 = number_A[int(len(number_A)/2):]
     number_B_1 = number_B[:int(len(number_B)/2)]
     number_B_2 = number_B[int(len(number_B)/2):]
+  
+    
+    #A1_A2 = Sum(number_A_1,number_A_2)
+    #B1_B2 = Sum(number_B_1,number_B_2)   
 
+    #Subtraction(number_A, number_B) 
+    Sum(number_A,number_B)
+    
+    #A1_B1 = Sum(number_A_1,number_B_1)
+    #A2_B2 = Sum(number_A_2,number_B_2)
 
+    
+
+# strings sum
 def Sum(number_1, number_2):
 
     x = number_1
@@ -45,15 +53,18 @@ def Sum(number_1, number_2):
 
     while len(x) != 0:
         calc = int(x[-1:]) + int(y[-1:]) + aux
-        result = str(calc%10) + result
+        result = str(calc%10) + result        
         aux = int(calc/10)
         x = x[:-1]
         y = y[:-1]
-    
-    return print(str(result))
+    if aux != 0:
+        result = str(aux) + result
+
+    print(result)        
+   
 
 
-
+# strings subtraction
 def Subtraction(number_1,number_2):
     x = number_1
     y = number_2
@@ -65,25 +76,27 @@ def Subtraction(number_1,number_2):
         x,y = y,x
         changed = True
 
-    while len(x) != 0:
-        if y[-1:] > x[-1:]:
-            aux = (int(x[-1:]) + 10) - carry
-            aux = aux - int(y[-1:])
-            carry = 1
-            result = str(aux) + result
-
-        elif y[-1:] == '0' and x[-1:] == '0' and carry > 0:
-            aux = (int(x[-1:]) + 10) - carry            
-            result = str(aux) + result
-        else:
-            #ajustar erro quando rouba de 0
-            aux = int(x[-1:]) - int(y[-1:]) - carry
-            carry = 0
-            result = str(aux) + result
-    
-        x = x[:-1]
-        y = y[:-1]
-    
+    if len(y) == 1 and len(x) == 1:
+        result = int(x[-1:]) - int(y[-1:])
+    else:
+        while len(x) != 0:
+            if y[-1:] > x[-1:]:
+                aux = (int(x[-1:]) + 10) - carry
+                aux = aux - int(y[-1:])
+                carry = 1
+                result = str(aux) + result
+            elif y[-1:] == '0' and x[-1:] == '0' and carry > 0:
+                aux = (int(x[-1:]) + 10) - carry            
+                result = str(aux) + result
+            else:
+                #ajustar erro quando rouba de 0
+                aux = int(x[-1:]) - int(y[-1:]) - carry
+                carry = 0
+                result = str(aux) + result
+        
+            x = x[:-1]
+            y = y[:-1]
+        
     if changed == False:
         print(result)
     else:
@@ -101,12 +114,7 @@ def Subtraction(number_1,number_2):
 
 
  
-    #part1 = Karatsuba(number_A_1,number_B_1)
-    #part2 = Karatsuba(number_A_2,number_B_1)
-    #part3 = Karatsuba(number_A_1,number_B_2)
-    #part4 = Karatsuba(number_A_2,number_B_2)
 
-    #print(part1)
     
     #AB = (str(part1) + 2*shift) + (str(int(part2+part3)) + shift) + str(part4)
     #print(AB)
@@ -140,6 +148,3 @@ if __name__ == "__main__":
     #print(x,y,z)
     #print(len(x),len(y),len(z))
     #print(type(x), type(y),type(z))
-
-   
-
