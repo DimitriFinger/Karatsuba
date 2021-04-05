@@ -72,6 +72,7 @@ def Subtraction(number_1,number_2):
             aux2 = 1
             result = str(aux) + result
         else:
+            #ajustar erro quando rouba de 0
             aux = int(x[-1:]) - aux2 - int(y[-1:])
             aux2 = 0
             result = str(aux) + result
