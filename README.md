@@ -1,2 +1,2 @@
 # Karatsuba
-Algortimo de Karatsuba implentado em python.
+Multiplicação de Karatsuba implentada em python utilizando somente strings.
