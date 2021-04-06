@@ -1,133 +1,145 @@
-# Author : Dimitri da Silva Finger
-# Projeto e Otimização de Algoritmos - 2021/1
-# Pontifícia Universidade Católica do Rio Grande do Sul (PUC-RS)
-# Karatsuba's Algorithm
 
 import sys
 
-def Karatsuba(number_A, number_B):      
+def Karatsuba(number_A, number_B):
 
-    if len(number_A) == 1 and len(number_B) == 1:
-       #print(str(int(number_A) * int(number_B)))
+    if len(number_A) <10 and len(number_B) <10:
        return str(int(number_A) * int(number_B))
 
+    number_A,number_B = SameSize(number_A,number_B)
+    #print(len(number_A)/2)
+    #print(number_A, number_B)
+    #print(type(number_A), type(number_B))
+    shift = int(len(number_A)/2) * '0'
+    #print(type(shift))
+    a1,a2,b1,b2 = Slice(number_A, number_B)
+    #print(type(a1), type(a2),type(b1), type(b2))
+    #print(a1,a2 + "   " + b1,b2)
+    #teste_soma=Sum(number_A,number_B)
+    #print(type(teste_soma))
+    #teste_sub=Sub(number_A, number_B)
+    a1,a2 = SameSize(a1,a2)
+    b1,b2= SameSize(b1,b2)
+    a1a2 = Sum(a1,a2)
+    b1b2 = Sum(b1,b2)
+
+    a1_b1 = Karatsuba(a1,b1)
+    a2_b2 = Karatsuba(a2,b2)
+    a1a2_b1b2 = Karatsuba(a1a2,b1b2)
+    #print("a1a2 = " + a1a2)
+    #print("b1b2 = " + b1b2)
+    a1a2_b1b2,a1_b1= SameSize(a1a2_b1b2,a1_b1)
+    subtraction = Sub(a1a2_b1b2,a1_b1)
+    #print(subtraction, a2_b2)
+    subtraction, a2_b2= SameSize(subtraction, a2_b2)
+    subtracted_part = Sub(subtraction, a2_b2)
+
+    a1_b1 = (a1_b1 + shift + shift)    
+    subtracted_part = subtracted_part + shift
+
+    a1_b1,subtracted_part = SameSize(a1_b1,subtracted_part)
+    sum = Sum(a1_b1,subtracted_part)
+    sum,a2_b2= SameSize(sum,a2_b2)
+    sum_result = Sum(sum,a2_b2)
+
+    return sum_result
+
+
+
+def SameSize(number_A, number_B):   
     if len(number_A) > len(number_B):
         while len(number_A) != len(number_B):
             number_B = '0' + number_B
 
     elif len(number_A) < len(number_B):
         while len(number_A) != len(number_B):
-            number_A = '0' + number_A    
+            number_A = '0' + number_A   
 
     if len(number_A)%2 != 0 and len(number_A) > 1:
         number_A = '0' + number_A
-        number_B = '0' + number_B 
+    if len(number_B)%2 != 0 and len (number_B) >1:
+        number_B = '0' + number_B     
 
-    # define shift size
-    shift = int(len(number_A)/2) * '0' 
-    
-    number_A_1 = number_A[:int(len(number_A)/2)]
-    number_A_2 = number_A[int(len(number_A)/2):]
-    number_B_1 = number_B[:int(len(number_B)/2)]
-    number_B_2 = number_B[int(len(number_B)/2):]
-  
-    
-    #A1_A2 = Sum(number_A_1,number_A_2)
-    #B1_B2 = Sum(number_B_1,number_B_2)   
-
-    #Subtraction(number_A, number_B) 
-    Sum(number_A,number_B)
-    
-    #A1_B1 = Sum(number_A_1,number_B_1)
-    #A2_B2 = Sum(number_A_2,number_B_2)
-
-    
-
-# strings sum
-def Sum(number_1, number_2):
-
-    x = number_1
-    y = number_2
-    aux = 0
-    result = ''
-
-    while len(x) != 0:
-        calc = int(x[-1:]) + int(y[-1:]) + aux
-        result = str(calc%10) + result        
-        aux = int(calc/10)
-        x = x[:-1]
-        y = y[:-1]
-    if aux != 0:
-        result = str(aux) + result
-
-    print(result)        
-   
+    return number_A,number_B
+    #print(number_A, number_B)
+    #print(type(number_A), type(number_B))
 
 
-# strings subtraction
-def Subtraction(number_1,number_2):
-    x = number_1
-    y = number_2
-    result = ''
-    changed = False
+def Slice(number_A, number_B):
+    a1 = number_A[:int(len(number_A)/2)]
+    a2 = number_A[int(len(number_A)/2):]
+    b1 = number_B[:int(len(number_B)/2)]
+    b2 = number_B[int(len(number_B)/2):]
+    #print(a1,a2 + "   " + b1,b2)
+    return a1,a2,b1,b2
+
+
+def Sum(number_1,number_2):
+    #print(number_1,number_2)
     carry = 0
+    result = ''
+    
+    while len(number_1) != 0:
+        calc = int(number_1[-1]) + int(number_2[-1]) + carry
+        #print(calc)
+        result = str(calc%10) + result       
+        carry = int(calc/10)    
+        number_1 = number_1[:-1]
+        number_2 = number_2[:-1]   
 
-    if y > x :
-        x,y = y,x
-        changed = True
+    if carry != 0:
+        result = str(carry) + result
+    #print(type(result))
+    return result
 
-    if len(y) == 1 and len(x) == 1:
-        result = int(x[-1:]) - int(y[-1:])
+def Sub(number_1,number_2):
+    #print(number_1,number_2)
+    #print(type(number_1),type(number_2))
+    #print(len(number_1))
+    carry = 0
+    result = ''
+    aux = 0
+    if number_2 > number_1 :
+        number_1,number_2 = number_2,number_1        
+    #print(type(number_1),type(number_2))
+    #print(number_1,number_2)
+
+    if len(number_2) == 1:
+        result = str(int(number_1[-1]) - int(number_2[-1]))
+        #print(result)
     else:
-        while len(x) != 0:
-            if y[-1:] > x[-1:]:
-                aux = (int(x[-1:]) + 10) - carry
-                aux = aux - int(y[-1:])
-                carry = 1
-                result = str(aux) + result
-            elif y[-1:] == '0' and x[-1:] == '0' and carry > 0:
-                aux = (int(x[-1:]) + 10) - carry            
-                result = str(aux) + result
-            else:
-                #ajustar erro quando rouba de 0
-                aux = int(x[-1:]) - int(y[-1:]) - carry
-                carry = 0
-                result = str(aux) + result
-        
-            x = x[:-1]
-            y = y[:-1]
-        
-    if changed == False:
-        print(result)
-    else:
-        print('-' + result)
-    
+        while len(number_1) !=0 :
+                    #print(number_1, number_2)
+                    if number_2[-1] > number_1[-1]:                        
+                        aux = int(number_1[-1]) + 10  - carry             
+                        aux = aux - int(number_2[-1])
+                        carry = 1
+                        result = str(aux) + result
+                        number_1 = number_1[:-1]
+                        number_2 = number_2[:-1]
 
+                    elif number_2[-1] == '0' and number_1[-1] == '0' and carry > 0:
+                        aux = (int(number_1[-1]) + 10) - carry         
+                        result = str(aux) + result
+                        number_1 = number_1[:-1]
+                        number_2 = number_2[:-1]
 
-
-
-
-
-
-
-
-
-
- 
-
-    
-    #AB = (str(part1) + 2*shift) + (str(int(part2+part3)) + shift) + str(part4)
-    #print(AB)
-    #print(part1,part2,part3,part4)
-
-
-
-    
-
-
-
-
-
+                    else:
+                        if carry > 0 and number_2[-1] == number_1[-1]:
+                            aux = int(number_1[-1]) + 10  - carry             
+                            aux = aux - int(number_2[-1])
+                            carry = 1
+                            result = str(aux) + result
+                            number_1 = number_1[:-1]
+                            number_2 = number_2[:-1]
+                        else:
+                            aux = int(number_1[-1]) - int(number_2[-1]) - carry
+                            carry = 0
+                            result = str(aux) + result        
+                            number_1 = number_1[:-1]
+                            number_2 = number_2[:-1]   
+                       
+    return result
 
 
 if __name__ == "__main__":
@@ -143,8 +155,10 @@ if __name__ == "__main__":
         number_A = sys.argv[1]
         number_B = sys.argv[2]
 
-    Karatsuba(number_A,number_B)
+    x = int(Karatsuba(number_A,number_B))
+    print(str(x))
    
-    #print(x,y,z)
-    #print(len(x),len(y),len(z))
-    #print(type(x), type(y),type(z))
+    #print(number_A)
+    #print(number_B)
+    #print(type(number_A))
+    #print(type(number_B))
