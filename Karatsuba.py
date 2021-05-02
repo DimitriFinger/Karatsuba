@@ -3,7 +3,7 @@ import sys
 
 def Karatsuba(number_A, number_B):
 
-    if len(number_A) <10 and len(number_B) <10:
+    if int(number_A) <10 and int(number_B) <10:
        return str(int(number_A) * int(number_B))
 
     number_A,number_B = SameSize(number_A,number_B)
